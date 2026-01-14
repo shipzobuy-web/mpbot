@@ -1,9 +1,7 @@
-from .files import Data
 from disnake.ext import commands
-
-config = Data("config").json_read()
+from core.config import Config  # <- new config from env
 
 def manager():
     def predicate(ctx):
-        return ctx.author.id in config["managers"]
+        return ctx.author.id in Config.MANAGERS
     return commands.check(predicate)
