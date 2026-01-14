@@ -1,12 +1,13 @@
 from pymongo import MongoClient
-from core.files import Data
+from core.config import Config
 
-client = MongoClient(Data("config").json_read()["mongo"])
+# Use the environment variable from Config
+client = MongoClient(Config.MONGO)
 
 class Database:
     def __init__(self, dbName=None, colName=None):
         if not dbName or not colName:
-            raise ValueError()
+            raise ValueError("Both dbName and colName must be provided")
         
         self.db = client[dbName]
         self.col = self.db[colName]
