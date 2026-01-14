@@ -1,9 +1,6 @@
-from turtle import title
-import disnake, asyncio
+import disnake
 from disnake.ext import commands
-from core.Database import Backups
-from core.files import Data
-
+from core.config import Config  # <- new config from env
 
 class Invite(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -14,12 +11,23 @@ class Invite(commands.Cog):
         description="Gives you the invite for the Bot and the Bots Support Server"
     )
     async def server_info(self, inter: disnake.CommandInteraction):
-        config = Data("config").json_read()
         bot_name = self.bot.user.name
-        emb = disnake.Embed(title=f"**Invite {bot_name}**", color=disnake.Color.from_rgb(r=255, g=255, b=255), description=f"{bot_name} Protects your Server from Mass-Mention and Webhook raids. See how the bot performs and how many users it's currently protecting!")
+        emb = disnake.Embed(
+            title=f"**Invite {bot_name}**",
+            color=disnake.Color.from_rgb(r=255, g=255, b=255),
+            description=f"{bot_name} protects your Server from Mass-Mention and Webhook raids. See how the bot performs and how many users it's currently protecting!"
+        )
         emb.set_author(name=bot_name, icon_url=self.bot.user.display_avatar.url)
-        emb.add_field(name=f"Add {bot_name}", inline=True, value=f"[Invite](https://discord.com/api/oauth2/authorize?client_id={self.bot.user.id}&permissions=8&scope=applications.commands%20bot)")
-        emb.add_field(name=f"Join {bot_name} Community", inline=True, value=f"[Join]({config['support_server']})")
+        emb.add_field(
+            name=f"Add {bot_name}",
+            inline=True,
+            value=f"[Invite](https://discord.com/api/oauth2/authorize?client_id={self.bot.user.id}&permissions=8&scope=applications.commands%20bot)"
+        )
+        emb.add_field(
+            name=f"Join {bot_name} Community",
+            inline=True,
+            value=f"[Join]({Config.SUPPORT_SERVER})"  # <- use env now
+        )
 
         return await inter.send(embed=emb)
 
